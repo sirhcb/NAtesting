@@ -68,39 +68,28 @@
 <body>
 
        <!-- Main Slideshow Grid -->
-        <div class="slideshow-container">
-            {% for img_data in page.images %}
-                <div class="slide">
-                <!-- We link the image to a unique map name -->
-                <img src="{{ img_data.url | relative_url }}" usemap="#map-{{ forloop.index0 }}" alt="Gallery Image">
-        
-                <!-- If this image has clickable zones, create them here -->
-                {% if img_data.zones %}
-                <map name="map-{{ forloop.index0 }}">
-                    {% for zone in img_data.zones %}
-                        <!-- This line now intercepts the click to show our custom pop-up -->
-                    <area shape="rect" coords="{{ zone.coords }}" href="{{ zone.target_url }}" onclick="openPopup('{{ zone.target_url }}'); return false;" alt="Clickable Zone">    
-                    
-                    {% endfor %}
-                </map>
-                {% endif %}
-                </div>
-            {% endfor %}
+<div class="slideshow-container">
+    {% for img_data in page.images %}
+    <div class="slide">
+        <!-- Using object lets the clickable SVG shapes work perfectly -->
+        {% if img_data.url %}
+            <object data="{{ img_data.url | relative_url }}" type="image/svg+xml" style="width:100%; max-height:75vh;"></object>
+        {% else %}
+            <object data="{{ img_data | relative_url }}" type="image/svg+xml" style="width:100%; max-height:75vh;"></object>
+        {% endif %}
+    </div>
+    {% endfor %}
     
-            <button class="prev" onclick="changeSlide(-1)">&#10094;</button>
-            <button class="next" onclick="changeSlide(1)">&#10095;</button>
-
-<!-- The Secret Hidden Pop-up Box -->
+    <button class="prev" onclick="changeSlide(-1)">&#10094;</button>
+    <button class="next" onclick="changeSlide(1)">&#10095;</button>
+</div>
+<!-- <!-- The Secret Hidden Pop-up Box -->
 <div id="imagePopup" class="image-popup-modal" onclick="closePopup()">
     <div class="popup-content-box" onclick="event.stopPropagation()">
         <button class="popup-close-btn" onclick="closePopup()">&times;</button>
         <img id="popupImageTarget" src="" alt="Popup View">
     </div>
-</div>
-
-
-            
-        </div>
+</div> -->
 
 
 <!-- Automated Thumbnail Strip -->
@@ -117,8 +106,6 @@
 </div>
 <a class="back-link" href="{{ '/' | relative_url }}">← Back to Menu</a>
 
-<!-- Load the automatic map resizer tool -->
-<script src="https://cloudflare.com"></script>
     
     <script>
        let slideIndex = 0;
