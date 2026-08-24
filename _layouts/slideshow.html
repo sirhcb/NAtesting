@@ -116,6 +116,10 @@
     {% endfor %}
 </div>
 <a class="back-link" href="{{ '/' | relative_url }}">← Back to Menu</a>
+
+<!-- Load the automatic map resizer tool -->
+<script src="https://cloudflare.com"></script>
+    
     <script>
        let slideIndex = 0;
 const slides = document.getElementsByClassName("slide");
@@ -159,6 +163,8 @@ function showCurrentSlide() {
     
     slides[slideIndex].style.display = "block";
     if(thumbs[slideIndex]) thumbs[slideIndex].classList.add("active");
+    // Fixes and scales your clickable zones right now!
+    imageMapResize();
 }
 
 function openPopup(imageSrc) {
