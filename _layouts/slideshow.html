@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }}</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; margin: 40px; color: #333; }
+        .gallery-container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .slideshow-container { position: relative; overflow: hidden; border-radius: 4px; }
+        .slide { display: none; width: 100%; text-align: center; }
+        .slide img { width: 100%; height: auto; display: block; max-height: 500px; object-fit: contain; background: #000; }
+        .prev, .next { cursor: pointer; position: absolute; top: 50%; width: auto; padding: 16px; margin-top: -22px; color: white; font-weight: bold; font-size: 18px; background-color: rgba(0,0,0,0.5); border: none; user-select: none; }
+        .next { right: 0; }
+        .back-link { display: inline-block; margin-top: 20px; color: #0066cc; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <div class="gallery-container">
+        <h1>{{ page.title }}</h1>
+        <hr>
+        
+        <div class="slideshow-container">
+            {% for img_url in page.images %}
+            <div class="slide">
+                <img src="{{ img_url | relative_url }}" alt="Gallery Image">
+            </div>
+            {% endfor %}
+            
+            <button class="prev" onclick="changeSlide(-1)">&#10094;</button>
+            <button class="next" onclick="changeSlide(1)">&#10095;</button>
+        </div>
+
+        <a class="back-link" href="{{ '/' | relative_url }}">← Back to Menu</a>
+    </div>
+
+    <script>
+        let slideIndex = 0;
+        const slides = document.getElementsByClassName("slide");
+        
+        if(slides.length > 0) {
+            slides[0].style.display = "block";
+        }
+
+        function changeSlide(n) {
+            slides[slideIndex].style.display = "none";
+            slideIndex += n;
+            if (slideIndex >= slides.length) { slideIndex = 0; }
+            if (slideIndex < 0) { slideIndex = slides.length - 1; }
+            slides[slideIndex].style.display = "block";
+        }
+    </script>
+
+</body>
+</html>
