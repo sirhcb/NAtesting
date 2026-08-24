@@ -23,27 +23,27 @@
 </head>
 <body>
 
-   <!-- Main Slideshow Grid -->
-<div class="slideshow-container">
-    {% for img_data in page.images %}
-    <div class="slide">
-        <!-- We link the image to a unique map name -->
-        <img src="{{ img_data.url | relative_url }}" usemap="#map-{{ forloop.index0 }}" alt="Gallery Image">
+       <!-- Main Slideshow Grid -->
+        <div class="slideshow-container">
+            {% for img_data in page.images %}
+                <div class="slide">
+                <!-- We link the image to a unique map name -->
+                <img src="{{ img_data.url | relative_url }}" usemap="#map-{{ forloop.index0 }}" alt="Gallery Image">
         
-        <!-- If this image has clickable zones, create them here -->
-        {% if img_data.zones %}
-        <map name="map-{{ forloop.index0 }}">
-            {% for zone in img_data.zones %}
-            <area shape="rect" coords="{{ zone.coords }}" href="#" onclick="jumpToSlide({{ zone.target_slide | minus: 1 }}); return false;" alt="Clickable Zone">
+                <!-- If this image has clickable zones, create them here -->
+                {% if img_data.zones %}
+                <map name="map-{{ forloop.index0 }}">
+                    {% for zone in img_data.zones %}
+                    <area shape="rect" coords="{{ zone.coords }}" href="#" onclick="jumpToSlide({{ zone.target_slide | minus: 1 }}); return false;" alt="Clickable Zone">
+                    {% endfor %}
+                </map>
+                {% endif %}
+                </div>
             {% endfor %}
-        </map>
-        {% endif %}
-    </div>
-    {% endfor %}
     
-    <button class="prev" onclick="changeSlide(-1)">&#10094;</button>
-    <button class="next" onclick="changeSlide(1)">&#10095;</button>
-</div>
+            <button class="prev" onclick="changeSlide(-1)">&#10094;</button>
+            <button class="next" onclick="changeSlide(1)">&#10095;</button>
+        </div>
 
 
         <!-- Automated Thumbnail Strip -->
