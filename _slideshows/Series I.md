@@ -1,4 +1,5 @@
 ---
+layout: slideshow
 title: "Series I Window Wall"
 images:
   - "/Series I/WW0102.png"
