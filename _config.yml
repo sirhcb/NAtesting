@@ -1,1 +1,4 @@
-include: ["_data"]
+collections:
+  slideshows:
+    output: true
+    permalink: /:collection/:path/
