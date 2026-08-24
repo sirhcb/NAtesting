@@ -79,7 +79,7 @@
                 <map name="map-{{ forloop.index0 }}">
                     {% for zone in img_data.zones %}
                         <!-- This line now intercepts the click to show our custom pop-up -->
-                    <area shape="rect" coords="{{ zone.coords }}" href="{{ zone.target_url }}" onclick="openPopup('{{ zone.target_url | relative_url }}'); return false;" alt="Clickable Zone">    
+                    <area shape="rect" coords="{{ zone.coords }}" href="{{ zone.target_url }}" onclick="openPopup('{{ zone.target_url }}'); return false;" alt="Clickable Zone">    
                     
                     {% endfor %}
                 </map>
