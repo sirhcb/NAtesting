@@ -1,3 +1,4 @@
+baseurl: "/NAtesting"
 collections:
   slideshows:
     output: true
