@@ -30,4 +30,5 @@ images:
   - url: "/Series I/WW0304.png"
   - url: "/Series I/WW0506.png"
   - url: "/Series I/WW0708.png"
+  - url: "/Series I/WallWindows0102sm.svg"
 ---
