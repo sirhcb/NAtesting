@@ -2,5 +2,5 @@
 layout: slideshow
 title: "Series I Window Wall"
 images:
-  - url: "/Series I/WallWindows0102sm.svg"
+  - url: "/Series I/WallWindowsSmall0102.svg"
 ---
