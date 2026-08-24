@@ -34,7 +34,7 @@
                 {% if img_data.zones %}
                 <map name="map-{{ forloop.index0 }}">
                     {% for zone in img_data.zones %}
-                    <area shape="rect" coords="{{ zone.coords }}" href="#" onclick="jumpToSlide({{ zone.target_slide | minus: 1 }}); return false;" alt="Clickable Zone">
+                    <area shape="rect" coords="{{ zone.coords }}" href="{{ zone.target_url }}" onclick="jumpToSlide({{ zone.target_slide | minus: 1 }}); return false;" alt="Clickable Zone">
                     {% endfor %}
                 </map>
                 {% endif %}
