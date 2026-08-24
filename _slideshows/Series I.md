@@ -15,15 +15,15 @@ images:
       - coords: "385,380,475,475"
         target_url: "/NAtesting/CoAs/001.5-Sven.png"
 
-      - coords: "630,180,720,275"
+      - coords: "635,180,725,275"
         target_url: "/NAtesting/CoAs/002.1-moman.png"
-      - coords: "730,180,820,275"
+      - coords: "735,180,825,275"
         target_url: "/NAtesting/CoAs/002.2-mowoman.png"
-      - coords: "680,280,770,375"
+      - coords: "685,280,775,375"
         target_url: "/NAtesting/CoAs/002.3-Rio.png"
-      - coords: "635,380,720,475"
+      - coords: "640,380,720,475"
         target_url: "/NAtesting/CoAs/002.4-Musta.png"
-      - coords: "735,380,820,475"
+      - coords: "740,380,820,475"
         target_url: "/NAtesting/CoAs/002.5-Corvos.png"
 
 
