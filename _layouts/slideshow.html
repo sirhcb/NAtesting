@@ -9,10 +9,16 @@
         .gallery-container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .slideshow-container { position: relative; overflow: hidden; border-radius: 4px; }
         .slide { display: none; width: 100%; text-align: center; }
-        .slide img { width: 100%; height: auto; display: block; max-height: 500px; object-fit: contain; background: #000; }
+        .slide img { width: 100%; height: auto; display: block; max-height: 500px; object-fit: contain; background: #000; margin: auto; }
         .prev, .next { cursor: pointer; position: absolute; top: 50%; width: auto; padding: 16px; margin-top: -22px; color: white; font-weight: bold; font-size: 18px; background-color: rgba(0,0,0,0.5); border: none; user-select: none; }
         .next { right: 0; }
-        .back-link { display: inline-block; margin-top: 20px; color: #0066cc; text-decoration: none; }
+        
+        /* Thumbnail Row Styling */
+        .thumbnail-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
+        .thumb { width: 80px; height: 60px; object-fit: cover; cursor: pointer; opacity: 0.6; border: 2px solid transparent; border-radius: 4px; transition: 0.2s; }
+        .thumb:hover, .thumb.active { opacity: 1; border-color: #0066cc; }
+
+        .back-link { display: inline-block; margin-top: 25px; color: #0066cc; text-decoration: none; }
     </style>
 </head>
 <body>
@@ -21,6 +27,7 @@
         <h1>{{ page.title }}</h1>
         <hr>
         
+        <!-- Main Slideshow Grid -->
         <div class="slideshow-container">
             {% for img_url in page.images %}
             <div class="slide">
@@ -32,23 +39,48 @@
             <button class="next" onclick="changeSlide(1)">&#10095;</button>
         </div>
 
+        <!-- Automated Thumbnail Strip -->
+        <div class="thumbnail-row">
+            {% for img_url in page.images %}
+            <img class="thumb" src="{{ img_url | relative_url }}" onclick="jumpToSlide({{ forloop.index0 }})" alt="Preview">
+            {% endfor %}
+        </div>
+
         <a class="back-link" href="{{ '/' | relative_url }}">← Back to Menu</a>
     </div>
 
     <script>
         let slideIndex = 0;
         const slides = document.getElementsByClassName("slide");
+        const thumbs = document.getElementsByClassName("thumb");
         
-        if(slides.length > 0) {
-            slides[0].style.display = "block";
-        }
+        // Show first image on page load
+        showCurrentSlide();
 
         function changeSlide(n) {
-            slides[slideIndex].style.display = "none";
             slideIndex += n;
             if (slideIndex >= slides.length) { slideIndex = 0; }
             if (slideIndex < 0) { slideIndex = slides.length - 1; }
+            showCurrentSlide();
+        }
+
+        function jumpToSlide(n) {
+            slideIndex = n;
+            showCurrentSlide();
+        }
+
+        function showCurrentSlide() {
+            if (slides.length === 0) return;
+
+            // Hide all images and remove active borders
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+                if(thumbs[i]) thumbs[i].classList.remove("active");
+            }
+            
+            // Show selected image and highlight its thumbnail
             slides[slideIndex].style.display = "block";
+            if(thumbs[slideIndex]) thumbs[slideIndex].classList.add("active");
         }
     </script>
 
