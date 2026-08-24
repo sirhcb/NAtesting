@@ -49,7 +49,7 @@
         <!-- Automated Thumbnail Strip -->
         <div class="thumbnail-row">
             {% for img_url in page.images %}
-            <img class="thumb" src="{{ img_url | relative_url }}" onclick="jumpToSlide({{ forloop.index0 }})" alt="Preview">
+            <img class="thumb" src="{{ img_data.url | relative_url }}" onclick="jumpToSlide({{ forloop.index0 }})" alt="Preview">
             {% endfor %}
         </div>
 
