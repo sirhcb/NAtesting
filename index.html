@@ -1,0 +1,68 @@
+---
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Automated Slideshows</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; margin: 40px; color: #333; }
+        .gallery-section { background: white; padding: 20px; margin-bottom: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .slideshow-container { max-width: 800px; position: relative; margin: auto; overflow: hidden; border-radius: 4px; }
+        .slide { display: none; width: 100%; text-align: center; }
+        .slide img { width: 100%; height: auto; display: block; max-height: 500px; object-fit: contain; background: #000; }
+        .prev, .next { cursor: pointer; position: absolute; top: 50%; width: auto; padding: 16px; margin-top: -22px; color: white; font-weight: bold; font-size: 18px; background-color: rgba(0,0,0,0.5); border: none; border-radius: 0 3px 3px 0; user-select: none; }
+        .next { right: 0; border-radius: 3px 0 0 3px; }
+        .prev:hover, .next:hover { background-color: rgba(0,0,0,0.8); }
+    </style>
+</head>
+<body>
+
+    <h1>📸 My Photo Collections</h1>
+    <hr>
+
+    {% for gallery in site.data.slideshows %}
+    <div class="gallery-section">
+        <h2>{{ gallery.folder_name }}</h2>
+        
+        <div class="slideshow-container" id="slideshow-{{ forloop.index }}">
+            {% for img_url in gallery.images %}
+            <div class="slide">
+                <img src="{{ img_url | relative_url }}" alt="Gallery Image">
+            </div>
+            {% endfor %}
+            
+            <button class="prev" onclick="changeSlide('slideshow-{{ forloop.index }}', -1)">&#10094;</button>
+            <button class="next" onclick="changeSlide('slideshow-{{ forloop.index }}', 1)">&#10095;</button>
+        </div>
+    </div>
+    {% endfor %}
+
+    <script>
+        // Start all slideshows on their first image
+        document.querySelectorAll('.slideshow-container').forEach(container => {
+            container.slideIndex = 0;
+            showSlides(container);
+        });
+
+        function changeSlide(containerId, n) {
+            const container = document.getElementById(containerId);
+            container.slideIndex += n;
+            showSlides(container);
+        }
+
+        function showSlides(container) {
+            const slides = container.getElementsByClassName("slide");
+            if (container.slideIndex >= slides.length) { container.slideIndex = 0; }
+            if (container.slideIndex < 0) { container.slideIndex = slides.length - 1; }
+            
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            slides[container.slideIndex].style.display = "block";
+        }
+    </script>
+
+</body>
+</html>
