@@ -50,38 +50,50 @@
     </div>
 
     <script>
-        let slideIndex = 0;
-        const slides = document.getElementsByClassName("slide");
-        const thumbs = document.getElementsByClassName("thumb");
-        
-        // Show first image on page load
-        showCurrentSlide();
+       let slideIndex = 0;
+const slides = document.getElementsByClassName("slide");
+const thumbs = document.getElementsByClassName("thumb");
 
-        function changeSlide(n) {
-            slideIndex += n;
-            if (slideIndex >= slides.length) { slideIndex = 0; }
-            if (slideIndex < 0) { slideIndex = slides.length - 1; }
-            showCurrentSlide();
+// Check the web address for a specific picture number on page load
+function checkHash() {
+    const hash = window.location.hash; // Looks for something like #slide-2
+    if (hash && hash.startsWith('#slide-')) {
+        const targetIndex = parseInt(hash.replace('#slide-', ''), 10) - 1;
+        // Make sure the number actually fits inside our photo count
+        if (targetIndex >= 0 && targetIndex < slides.length) {
+            slideIndex = targetIndex;
         }
+    }
+}
 
-        function jumpToSlide(n) {
-            slideIndex = n;
-            showCurrentSlide();
-        }
+// Check the address once right now
+checkHash();
+showCurrentSlide();
 
-        function showCurrentSlide() {
-            if (slides.length === 0) return;
+function changeSlide(n) {
+    slideIndex += n;
+    if (slideIndex >= slides.length) { slideIndex = 0; }
+    if (slideIndex < 0) { slideIndex = slides.length - 1; }
+    showCurrentSlide();
+}
 
-            // Hide all images and remove active borders
-            for (let i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";
-                if(thumbs[i]) thumbs[i].classList.remove("active");
-            }
-            
-            // Show selected image and highlight its thumbnail
-            slides[slideIndex].style.display = "block";
-            if(thumbs[slideIndex]) thumbs[slideIndex].classList.add("active");
-        }
+function jumpToSlide(n) {
+    slideIndex = n;
+    showCurrentSlide();
+}
+
+function showCurrentSlide() {
+    if (slides.length === 0) return;
+
+    for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+        if(thumbs[i]) thumbs[i].classList.remove("active");
+    }
+    
+    slides[slideIndex].style.display = "block";
+    if(thumbs[slideIndex]) thumbs[slideIndex].classList.add("active");
+}
+
     </script>
 
 </body>
