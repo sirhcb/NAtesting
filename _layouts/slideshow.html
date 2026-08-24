@@ -46,16 +46,18 @@
         </div>
 
 
-        <!-- Automated Thumbnail Strip -->
-        <div class="thumbnail-row">
-            {% for img_url in page.images %}
+<!-- Automated Thumbnail Strip -->
+<div class="thumbnail-row">
+    {% for img_data in page.images %}
+        <!-- If img_data is a dictionary with a url property -->
+        {% if img_data.url %}
             <img class="thumb" src="{{ img_data.url | relative_url }}" onclick="jumpToSlide({{ forloop.index0 }})" alt="Preview">
-            {% endfor %}
-        </div>
-
-        <a class="back-link" href="{{ '/' | relative_url }}">← Back to Menu</a>
-    </div>
-
+        <!-- If img_data is just a direct text path string -->
+        {% else %}
+            <img class="thumb" src="{{ img_data | relative_url }}" onclick="jumpToSlide({{ forloop.index0 }})" alt="Preview">
+        {% endif %}
+    {% endfor %}
+</div>
     <script>
        let slideIndex = 0;
 const slides = document.getElementsByClassName("slide");
