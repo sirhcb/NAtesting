@@ -156,17 +156,56 @@ function jumpToSlide(n) {
 function showCurrentSlide() {
     if (slides.length === 0) return;
 
+    // Hide all images and remove active borders
     for (let i = 0; i < slides.length; i++) {
         slides[i].style.display = "none";
         if(thumbs[i]) thumbs[i].classList.remove("active");
     }
     
-    slides[slideIndex].style.display = "block";
+    // Show the selected slide container block
+    const activeSlide = slides[slideIndex];
+    activeSlide.style.display = "block";
     if(thumbs[slideIndex]) thumbs[slideIndex].classList.add("active");
-    // Fixes and scales your clickable zones right now!
-    imageMapResize();
+
+    // Grab the actual <img> tag inside this active slide block
+    const img = activeSlide.querySelector('img');
+
+    if (img) {
+        // If the browser already finished loading this picture file
+        if (img.complete) {
+            runResizerAndDrawing();
+        } else {
+            // If the picture is still downloading, wait for it to finish!
+            img.onload = function() {
+                runResizerAndDrawing();
+            };
+        }
+    }
 }
 
+// Group our tools together so they run in the correct order
+function runResizerAndDrawing() {
+    imageMapResize(); // 1. Calculate the map scaling math
+//    drawVisibleZones(); // 2. Paint the visible blue boxes over the map
+}
+
+
+
+// function showCurrentSlide() {
+//     if (slides.length === 0) return;
+
+//     for (let i = 0; i < slides.length; i++) {
+//         slides[i].style.display = "none";
+//         if(thumbs[i]) thumbs[i].classList.remove("active");
+//     }
+    
+//     slides[slideIndex].style.display = "block";
+//     if(thumbs[slideIndex]) thumbs[slideIndex].classList.add("active");
+//     // Fixes and scales your clickable zones right now!
+//     imageMapResize();
+//}
+
+        
 function openPopup(imageSrc) {
     const modal = document.getElementById("imagePopup");
     const modalImg = document.getElementById("popupImageTarget");
