@@ -1,4 +1,4 @@
-baseurl: "/NAtesting"
+baseurl: "/NotreArms"
 collections:
   slideshows:
     output: true
