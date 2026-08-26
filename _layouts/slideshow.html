@@ -83,14 +83,15 @@
     <button class="prev" onclick="changeSlide(-1)">&#10094;</button>
     <button class="next" onclick="changeSlide(1)">&#10095;</button>
 </div>
-<!-- <!-- The Secret Hidden Pop-up Box -->
+<!-- The Secret Hidden Pop-up Box -->
 <div id="imagePopup" class="image-popup-modal" onclick="closePopup()">
     <div class="popup-content-box" onclick="event.stopPropagation()">
         <button class="popup-close-btn" onclick="closePopup()">&times;</button>
         <img id="popupImageTarget" src="" alt="Popup View">
     </div>
-</div> -->
-
+</div>
+<br>
+    
 
 <!-- Automated Thumbnail Strip -->
 <div class="thumbnail-row">
@@ -104,7 +105,7 @@
         {% endif %}
     {% endfor %}
 </div>
-<a class="back-link" href="{{ '/' | relative_url }}">← Back to Menu</a>
+<a class="back-link" href="{{ '/' | relative_url }}">← Back to NotreArms</a>
 
     
     <script>
