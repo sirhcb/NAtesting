@@ -16,13 +16,11 @@
     
     
     /* Default for phones: 1 column */
-    /* .grid-container {
-        display: grid;
-        grid-template-columns: repeat(1, 1fr)
+     .grid-container {
+            columns: 1;
     }
-*/
     /* For tablets and desktops: 3 columns */
-  /*  @media (min-width: 768px) { */
+  @media (min-width: 768px) { 
         .grid-container {
               columns: 3;          /* Automatically splits content into 3 flexible columns */
               column-gap: 16px;    /* Sets the spacing between the columns */
