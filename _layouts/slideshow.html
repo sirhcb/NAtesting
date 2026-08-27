@@ -264,18 +264,21 @@ function runResizerAndDrawing() {
 //}
 
         
-function openPopup(imageSrc) {
-    const modal = document.getElementById("imagePopup");
-    const modalImg = document.getElementById("popupImageTarget");
-    
-    modalImg.src = imageSrc;
-    modal.style.display = "flex";
-}
+<!-- ... Your existing slideshow and pop-up HTML code above ... -->
 
-function closePopup() {
-    const modal = document.getElementById("imagePopup");
-    modal.style.display = "none";
-}
+<script>
+  function openPopup() {
+    document.getElementById("imagePopup").style.display = "flex";
+  }
+
+  function closePopup() {
+    document.getElementById("imagePopup").style.display = "none";
+  }
+</script>
+
+</body>
+</html>
+
 
 
         
