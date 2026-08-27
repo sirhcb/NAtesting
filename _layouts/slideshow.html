@@ -62,6 +62,64 @@
 }
 .popup-close-btn:hover { color: #bbb; }
 
+/* The backdrop layout */
+.image-popup-modal {
+  display: none; 
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 1000;
+}
+
+/* The actual box on screen */
+.popup-content-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh; /* Limits the window size to 80% of screen height */
+  background: #111; /* Sleek dark background */
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The magic scrolling mechanism */
+.popup-scroll-container {
+  overflow-y: auto; /* Enables vertical scrolling inside the box */
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Spaces out the scrolling images cleanly */
+}
+
+/* Force scrollable images to fit boundaries safely */
+.popup-gallery-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+}
+
+/* Style the close button over the absolute container */
+.popup-close-btn {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+        
+        
         
     </style>
 </head>
@@ -85,10 +143,22 @@
 </div>
 <!-- The Secret Hidden Pop-up Box -->
 <div id="imagePopup" class="image-popup-modal" onclick="closePopup()">
-    <div class="popup-content-box" onclick="event.stopPropagation()">
-        <button class="popup-close-btn" onclick="closePopup()">&times;</button>
-        <img id="popupImageTarget" src="" alt="Popup View">
+  <div class="popup-content-box" onclick="event.stopPropagation()">
+    <button class="popup-close-btn" onclick="closePopup()">&times;</button>
+    
+    <!-- Title or heading for context (Optional) -->
+    <h3 class="popup-title">CoA Gallery</h3>
+    
+    <!-- The scrollable track containing the separate folder images -->
+    <div class="popup-scroll-container">
+      {% for file in site.static_files %}
+        {% if file.path contains "CoAs/" %}
+          <img src="{{ file.path | relative_url }}" alt="Gallery Image" class="popup-gallery-img">
+        {% endif %}
+      {% endfor %}
     </div>
+
+  </div>
 </div>
 <br>
     
