@@ -31,7 +31,7 @@
 
 <!-- 3. Link back to your home page -->
 <div class="nav-header">
-    <a href="/" class="back-link">← Back to Home Page</a>
+    <a href="/NotreArms/" class="back-link">← Back to Home Page</a>
 </div>
 
 <!-- 1. Autofitting slideshow container -->
@@ -59,33 +59,41 @@
     const playPauseBtn = document.getElementById('playPauseBtn');
 
     async function initSlideshow() {
-        try {
-            // Adjust path to '/repo-name/images.json' if you aren't using a custom domain
-            const response = await fetch('/images.json');
-            images = await response.json();
-            
-            if (images.length === 0) {
-                container.innerHTML = "<p>No images found in the target folder.</p>";
-                return;
-            }
-
-            // Generate image layout structural nodes
-            images.forEach((src, index) => {
-                const img = document.createElement('img');
-                img.src = src;
-                img.className = index === 0 ? 'slide active' : 'slide';
-                container.appendChild(img);
-            });
-
-            // Bind interactions and initiate loop runtime
-            setupControls();
-            startTimer();
-
-        } catch (error) {
-            console.error("Error loading images:", error);
-            container.innerHTML = "<p>Failed to load image directory configuration.</p>";
+    try {
+        // AUTOMATIC PATH ROUTING:
+        // This detects if your site is hosted at username.github.io/repo-name/
+        const isSubfolderRepo = window.location.pathname.split('/').filter(Boolean).length > 0 && !window.location.hostname.includes('localhost');
+        const repoName = isSubfolderRepo ? `/${window.location.pathname.split('/')[1]}` : '';
+        
+        // This dynamically combines the repository prefix with the file name
+        const response = await fetch(`${repoName}/images.json`);
+        images = await response.json();
+        
+        if (images.length === 0) {
+            container.innerHTML = "<p>No images found in the target folder.</p>";
+            return;
         }
+
+        // Generate image layout structural nodes
+        images.forEach((src, index) => {
+            const img = document.createElement('img');
+            
+            // Fix individual image asset paths to also include the repo name prefix
+            img.src = `${repoName}/${src}`;
+            
+            img.className = index === 0 ? 'slide active' : 'slide';
+            container.appendChild(img);
+        });
+
+        // Bind interactions and initiate loop runtime
+        setupControls();
+        startTimer();
+
+    } catch (error) {
+        console.error("Error loading images:", error);
+        container.innerHTML = "<p>Failed to load image directory configuration.</p>";
     }
+}
 
     function showSlide(index) {
         const slides = document.querySelectorAll('.slide');
