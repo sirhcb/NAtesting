@@ -2,33 +2,74 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Automated Slideshow</title>
     <style>
-        .slideshow-container { max-width: 800px; position: relative; margin: auto; }
-        .slide { display: none; width: 100%; height: auto; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: sans-serif; background: #111; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        /* Navigation header */
+        .nav-header { position: absolute; top: 20px; left: 20px; z-index: 10; }
+        .back-link { color: #aaa; text-decoration: none; font-size: 1rem; border: 1px solid #444; padding: 8px 16px; border-radius: 4px; background: #222; transition: 0.2s; }
+        .back-link:hover { color: #fff; background: #333; border-color: #666; }
+
+        /* Responsively containing the images to fit cleanly on screen */
+        .slideshow-container { position: relative; width: 90vw; max-width: 1000px; height: 70vh; max-height: 600px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+        
+        /* Autofit constraints: maintains aspect ratio without scaling past boundaries */
+        .slide { display: none; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; user-select: none; }
         .active { display: block; }
+
+        /* Control bar design */
+        .controls-container { display: flex; gap: 12px; margin-top: 20px; align-items: center; }
+        .btn { background: #222; border: 1px solid #444; color: #fff; padding: 10px 20px; font-size: 1rem; border-radius: 4px; cursor: pointer; min-width: 80px; transition: 0.2s; }
+        .btn:hover { background: #333; border-color: #666; }
+        .btn:active { background: #444; }
     </style>
 </head>
 <body>
 
+<!-- 3. Link back to your home page -->
+<div class="nav-header">
+    <a href="/" class="back-link">← Back to Home Page</a>
+</div>
+
+<!-- 1. Autofitting slideshow container -->
 <div class="slideshow-container" id="slideshow">
-    <!-- Images will be inserted here dynamically -->
+    <!-- Images dynamically inject here -->
+</div>
+
+<!-- 2. Controls structure -->
+<div class="controls-container">
+    <button class="btn" id="prevBtn">Back</button>
+    <button class="btn" id="playPauseBtn">Pause</button>
+    <button class="btn" id="nextBtn">Forward</button>
 </div>
 
 <script>
+    let images = [];
     let currentIndex = 0;
+    let slideInterval = null;
+    let isPlaying = true;
+    const INTERVAL_TIME = 3000; // Time in milliseconds
+
+    const container = document.getElementById('slideshow');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const playPauseBtn = document.getElementById('playPauseBtn');
 
     async function initSlideshow() {
         try {
-            // Fetch the auto-generated JSON list
-            const response = await fetch('./images.json');
-            const images = await response.json();
+            // Adjust path to '/repo-name/images.json' if you aren't using a custom domain
+            const response = await fetch('/images.json');
+            images = await response.json();
             
-            if (images.length === 0) return;
+            if (images.length === 0) {
+                container.innerHTML = "<p>No images found in the target folder.</p>";
+                return;
+            }
 
-            const container = document.getElementById('slideshow');
-            
-            // Build the image elements
+            // Generate image layout structural nodes
             images.forEach((src, index) => {
                 const img = document.createElement('img');
                 img.src = src;
@@ -36,17 +77,68 @@
                 container.appendChild(img);
             });
 
-            // Start the loop
-            setInterval(() => {
-                const slides = document.querySelectorAll('.slide');
-                slides[currentIndex].classList.remove('active');
-                currentIndex = (currentIndex + 1) % slides.length;
-                slides[currentIndex].classList.add('active');
-            }, 3000); // Change image every 3 seconds
+            // Bind interactions and initiate loop runtime
+            setupControls();
+            startTimer();
 
         } catch (error) {
             console.error("Error loading images:", error);
+            container.innerHTML = "<p>Failed to load image directory configuration.</p>";
         }
+    }
+
+    function showSlide(index) {
+        const slides = document.querySelectorAll('.slide');
+        if (slides.length === 0) return;
+
+        // Strip visibility from current node
+        slides[currentIndex].classList.remove('active');
+        
+        // Handle boundary wrap-around logic
+        currentIndex = (index + slides.length) % slides.length;
+        
+        // Render target node visible
+        slides[currentIndex].classList.add('active');
+    }
+
+    function startTimer() {
+        if (slideInterval) clearInterval(slideInterval);
+        slideInterval = setInterval(() => {
+            showSlide(currentIndex + 1);
+        }, INTERVAL_TIME);
+    }
+
+    function stopTimer() {
+        clearInterval(slideInterval);
+        slideInterval = null;
+    }
+
+    function setupControls() {
+        // Forward event execution
+        nextBtn.addEventListener('click', () => {
+            showSlide(currentIndex + 1);
+            if (isPlaying) startTimer(); // Reset baseline countdown pacing tracker
+        });
+
+        // Backward event execution
+        prevBtn.addEventListener('click', () => {
+            showSlide(currentIndex - 1);
+            if (isPlaying) startTimer(); // Reset baseline countdown pacing tracker
+        });
+
+        // State toggle conditional branch
+        playPauseBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                stopTimer();
+                playPauseBtn.textContent = 'Play';
+                isPlaying = false;
+            } else {
+                showSlide(currentIndex + 1);
+                startTimer();
+                playPauseBtn.textContent = 'Pause';
+                isPlaying = true;
+            }
+        });
     }
 
     initSlideshow();
