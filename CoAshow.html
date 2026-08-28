@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automated Slideshow</title>
+    <style>
+        .slideshow-container { max-width: 800px; position: relative; margin: auto; }
+        .slide { display: none; width: 100%; height: auto; }
+        .active { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="slideshow-container" id="slideshow">
+    <!-- Images will be inserted here dynamically -->
+</div>
+
+<script>
+    let currentIndex = 0;
+
+    async function initSlideshow() {
+        try {
+            // Fetch the auto-generated JSON list
+            const response = await fetch('./images.json');
+            const images = await response.json();
+            
+            if (images.length === 0) return;
+
+            const container = document.getElementById('slideshow');
+            
+            // Build the image elements
+            images.forEach((src, index) => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.className = index === 0 ? 'slide active' : 'slide';
+                container.appendChild(img);
+            });
+
+            // Start the loop
+            setInterval(() => {
+                const slides = document.querySelectorAll('.slide');
+                slides[currentIndex].classList.remove('active');
+                currentIndex = (currentIndex + 1) % slides.length;
+                slides[currentIndex].classList.add('active');
+            }, 3000); // Change image every 3 seconds
+
+        } catch (error) {
+            console.error("Error loading images:", error);
+        }
+    }
+
+    initSlideshow();
+</script>
+</body>
+</html>
