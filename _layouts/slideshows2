@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }}</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; margin: 40px; color: #333; }
+        .gallery-container { max-width: 1000px; margin: auto; background: transparent; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .slideshow-container { position: relative; overflow: hidden; border-radius: 4px; }
+        .slide { display: none; width: 100%; text-align: center; }
+        .slide img { width: 80%; height: auto; display: block; max-height: 75vh; width:auto; background: transparent; margin: auto; }
+        .prev, .next { cursor: pointer; position: absolute; top: 50%; width: auto; padding: 16px; margin-top: -22px; color: white; font-weight: bold; font-size: 18px; background-color: rgba(0,0,0,0.5); border: none; user-select: none; }
+        .next { right: 0; }
+        
+        /* Thumbnail Row Styling */
+        .thumbnail-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
+        .thumb { width: 80px; height: 60px; object-fit: cover; cursor: pointer; opacity: 0.6; border: 2px solid transparent; border-radius: 4px; transition: 0.2s; }
+        .thumb:hover, .thumb.active { opacity: 1; border-color: #0066cc; }
+
+        .back-link { display: inline-block; margin-top: 25px; color: #0066cc; text-decoration: none; }
+
+        /* Pop-up Overlay Styling */
+.image-popup-modal {
+    display: none; 
+    position: fixed; 
+    z-index: 9999; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85); 
+    justify-content: center;
+    align-items: center;
+}
+
+/* Container for Content */
+.popup-content-box {
+    position: relative;
+    max-width: 90%;
+    max-height: 85%;
+}
+
+.popup-content-box img {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+/* Close Button Layout */
+.popup-close-btn {
+    position: absolute;
+    top: -45px;
+    right: 0;
+    color: white;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+.popup-close-btn:hover { color: #bbb; }
+
+/* Dark blur overlay background */
+.slideshow-modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 9999; /* Keeps it on top of everything else */
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+/* Modal layout container constraints */
+.modal-content-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Responsively size the photo boundaries */
+.slideshow-container {
+    position: relative;
+    width: 90vw; max-width: 1000px;
+    height: 70vh; max-height: 600px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; background: #000; border-radius: 8px;
+}
+
+.slide { display: none; max-width: 100%; max-height: 100%; object-fit: contain; }
+.active { display: block; }
+
+/* Control tray layout */
+.controls-container { display: flex; gap: 12px; margin-top: 20px; align-items: center; }
+.btn { background: #222; border: 1px solid #444; color: #fff; padding: 10px 20px; border-radius: 4px; cursor: pointer; min-width: 80px; }
+.btn:hover { background: #333; }
+
+/* Dedicated close button alignment */
+.close-modal-btn {
+    position: absolute;
+    top: -45px; right: 0;
+    background: none; border: none;
+    color: #fff; font-size: 2rem;
+    cursor: pointer; opacity: 0.7;
+}
+.close-modal-btn:hover { opacity: 1; }
+
+
+        
+    </style>
+</head>
+<body>
+
+       <!-- Main Slideshow Grid -->
+<div class="slideshow-container">
+    {% for img_data in page.images %}
+    <div class="slide">
+        <!-- Using object lets the clickable SVG shapes work perfectly -->
+        {% if img_data.url %}
+            <object data="{{ img_data.url | relative_url }}" type="image/svg+xml" style="width:100%; max-height:75vh;"></object>
+        {% else %}
+            <object data="{{ img_data | relative_url }}" type="image/svg+xml" style="width:100%; max-height:75vh;"></object>
+        {% endif %}
+    </div>
+    {% endfor %}
+    
+    <button class="prev" onclick="changeSlide(-1)">&#10094;</button>
+    <button class="next" onclick="changeSlide(1)">&#10095;</button>
+</div>
+<!-- The Secret Hidden Pop-up Box -->
+<div id="imagePopup" class="image-popup-modal" onclick="closePopup()">
+    <div class="popup-content-box" onclick="event.stopPropagation()">
+        <button class="popup-close-btn" onclick="closePopup()">&times;</button>
+        <img id="popupImageTarget" src="" alt="Popup View">
+    </div>
+</div>
+<br>
+    
+<!-- Trigger Button on your Main Page -->
+<button id="openSlideshowBtn" class="btn">View Image Gallery</button>
+
+<!-- The Popup Layout Markup -->
+<div id="slideshowModal" class="slideshow-modal">
+    <div class="modal-content-wrapper">
+        <!-- Close Button (X) -->
+        <button class="close-modal-btn" id="closeModalBtn">&times;</button>
+        
+        <!-- Autofitting image box -->
+        <div class="slideshow-container" id="slideshow">
+            <!-- Images inject here -->
+        </div>
+
+        <!-- System Controls -->
+        <div class="controls-container">
+            <button class="btn" id="prevBtn">Back</button>
+            <button class="btn" id="playPauseBtn">Play</button>
+            <button class="btn" id="nextBtn">Forward</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Automated Thumbnail Strip -->
+<div class="thumbnail-row">
+    {% for img_data in page.images %}
+        <!-- If img_data is a dictionary with a url property -->
+        {% if img_data.url %}
+            <img class="thumb" src="{{ img_data.url | relative_url }}" onclick="jumpToSlide({{ forloop.index0 }})" alt="Preview">
+        <!-- If img_data is just a direct text path string -->
+        {% else %}
+            <img class="thumb" src="{{ img_data | relative_url }}" onclick="jumpToSlide({{ forloop.index0 }})" alt="Preview">
+        {% endif %}
+    {% endfor %}
+</div>
+<a class="back-link" href="{{ '/' | relative_url }}">← Back to NotreArms</a>
+
+    
+    <script>
+       let slideIndex = 0;
+const slides = document.getElementsByClassName("slide");
+const thumbs = document.getElementsByClassName("thumb");
+
+// Check the web address for a specific picture number on page load
+function checkHash() {
+    const hash = window.location.hash; // Looks for something like #slide-2
+    if (hash && hash.startsWith('#slide-')) {
+        const targetIndex = parseInt(hash.replace('#slide-', ''), 10) - 1;
+        // Make sure the number actually fits inside our photo count
+        if (targetIndex >= 0 && targetIndex < slides.length) {
+            slideIndex = targetIndex;
+        }
+    }
+}
+
+// Check the address once right now
+checkHash();
+showCurrentSlide();
+
+function changeSlide(n) {
+    slideIndex += n;
+    if (slideIndex >= slides.length) { slideIndex = 0; }
+    if (slideIndex < 0) { slideIndex = slides.length - 1; }
+    showCurrentSlide();
+}
+
+function jumpToSlide(n) {
+    slideIndex = n;
+    showCurrentSlide();
+}
+
+function showCurrentSlide() {
+    if (slides.length === 0) return;
+
+    // Hide all images and remove active borders
+    for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+        if(thumbs[i]) thumbs[i].classList.remove("active");
+    }
+    
+    // Show the selected slide container block
+    const activeSlide = slides[slideIndex];
+    activeSlide.style.display = "block";
+    if(thumbs[slideIndex]) thumbs[slideIndex].classList.add("active");
+
+    // Grab the actual <img> tag inside this active slide block
+    const img = activeSlide.querySelector('img');
+
+    if (img) {
+        // If the browser already finished loading this picture file
+        if (img.complete) {
+            runResizerAndDrawing();
+        } else {
+            // If the picture is still downloading, wait for it to finish!
+            img.onload = function() {
+                runResizerAndDrawing();
+            };
+        }
+    }
+}
+
+// Group our tools together so they run in the correct order
+function runResizerAndDrawing() {
+    imageMapResize(); // 1. Calculate the map scaling math
+//    drawVisibleZones(); // 2. Paint the visible blue boxes over the map
+}
+
+
+
+// function showCurrentSlide() {
+//     if (slides.length === 0) return;
+
+//     for (let i = 0; i < slides.length; i++) {
+//         slides[i].style.display = "none";
+//         if(thumbs[i]) thumbs[i].classList.remove("active");
+//     }
+    
+//     slides[slideIndex].style.display = "block";
+//     if(thumbs[slideIndex]) thumbs[slideIndex].classList.add("active");
+//     // Fixes and scales your clickable zones right now!
+//     imageMapResize();
+//}
+
+        
+function openPopup(imageSrc) {
+    const modal = document.getElementById("imagePopup");
+    const modalImg = document.getElementById("popupImageTarget");
+    
+    modalImg.src = imageSrc;
+    modal.style.display = "flex";
+}
+
+function closePopup() {
+    const modal = document.getElementById("imagePopup");
+    modal.style.display = "none";
+}
+
+
+        
+    </script>
+
+</body>
+</html>
