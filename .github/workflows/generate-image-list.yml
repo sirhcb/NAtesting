@@ -3,7 +3,7 @@ name: Generate Image List
 on:
   push:
     paths:
-      - 'images/**' # Change to your specific folder path
+      - 'CoAs/**' # Change to your specific folder path
 
 jobs:
   build:
