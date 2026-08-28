@@ -5,6 +5,10 @@ on:
     paths:
       - 'CoAs/**' # Change to your specific folder path
 
+# ADD THESE THREE LINES TO FIX THE WRITE ERROR:
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
