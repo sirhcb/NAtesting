@@ -17,7 +17,7 @@ jobs:
           echo "[" > images.json
           first=true
           # Loop through images (adjust extensions as needed)
-          for file in images/*.{jpg,jpeg,png,webp,gif}; do
+          for file in CoAs/*.{jpg,jpeg,png,webp,gif}; do
             if [ -f "$file" ]; then
               if [ "$first" = true ]; then
                 first=false
