@@ -1,0 +1,38 @@
+name: Generate Image List
+
+on:
+  push:
+    paths:
+      - 'images/**' # Change to your specific folder path
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Generate JSON
+        run: |
+          echo "[" > images.json
+          first=true
+          # Loop through images (adjust extensions as needed)
+          for file in images/*.{jpg,jpeg,png,webp,gif}; do
+            if [ -f "$file" ]; then
+              if [ "$first" = true ]; then
+                first=false
+              else
+                echo "," >> images.json
+              fi
+              echo "\"$file\"" >> images.json
+            fi
+          done
+          echo "]" >> images.json
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@://github.com"
+          git add images.json
+          git commit -m "Automated image list update" || exit 0
+          git push
