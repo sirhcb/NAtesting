@@ -5,4 +5,5 @@ images:
   - url: "/Series I/WallWindowsSmall0102.svg"
   - url: "/Series I/WallWindowsSmall0304.svg"
   - url: "/Series I/WallWindowsSmall0506.svg"
+  - url: "/Series I/WallWindowsSmall0708.svg"
 ---
